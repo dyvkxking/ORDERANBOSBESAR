@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { Calendar, User, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import ContentRenderer from '@/components/ContentRenderer'
 
 interface BlogPostPageProps {
   params: {
@@ -107,11 +108,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         {/* Content */}
-        <div className="prose prose-lg max-w-none">
-          {post.content && (
-            <div dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }} />
-          )}
-        </div>
+        {post.content && (
+          <ContentRenderer 
+            content={post.content} 
+            className="prose prose-lg max-w-none"
+          />
+        )}
 
         {/* Author Bio */}
         {post.author && (
