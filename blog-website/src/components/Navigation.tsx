@@ -43,6 +43,20 @@ export default function Navigation() {
             >
               Contact
             </Link>
+            <div className="flex items-center space-x-4 pl-4 border-l border-gray-300">
+              <Link
+                href="/create"
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              >
+                Create Post
+              </Link>
+              <Link
+                href="/manage"
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              >
+                Manage
+              </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -88,6 +102,22 @@ export default function Navigation() {
               >
                 Contact
               </Link>
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <Link
+                  href="/create"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Create Post
+                </Link>
+                <Link
+                  href="/manage"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Manage
+                </Link>
+              </div>
             </div>
           </div>
         )}
