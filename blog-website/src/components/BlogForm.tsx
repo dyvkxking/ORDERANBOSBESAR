@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Author, Category } from '@/types/supabase'
-import { createPost, updatePost, getAuthors, getCategories } from '@/lib/supabase/queries'
+import { Category } from '@/types/supabase'
+import { createPost, updatePost, getCategories } from '@/lib/supabase/queries'
 import { useRouter } from 'next/navigation'
 import { Save, Eye, X, Upload, Image as ImageIcon, Calendar, User, Tag, FileText, Star } from 'lucide-react'
 import RichTextEditor from './RichTextEditor'
@@ -16,7 +16,6 @@ interface BlogFormProps {
     excerpt?: string
     content?: string
     featured_image_url?: string
-    author_id?: string
     featured?: boolean
     published?: boolean
     published_at?: string
@@ -28,7 +27,6 @@ interface BlogFormProps {
 export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [authors, setAuthors] = useState<Author[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialData?.category_ids || [])
   
@@ -38,21 +36,16 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
     excerpt: initialData?.excerpt || '',
     content: initialData?.content || '',
     featured_image_url: initialData?.featured_image_url || '',
-    author_id: initialData?.author_id || '',
     featured: initialData?.featured || false,
     published: initialData?.published || false,
     published_at: initialData?.published_at || new Date().toISOString().slice(0, 16)
   })
 
-  // Load authors and categories on component mount
+  // Load categories on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [authorsData, categoriesData] = await Promise.all([
-          getAuthors(),
-          getCategories()
-        ])
-        setAuthors(authorsData)
+        const categoriesData = await getCategories()
         setCategories(categoriesData)
       } catch (error) {
         console.error('Error loading data:', error)
@@ -131,16 +124,16 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="bg-white rounded-lg shadow-lg p-8 border border-[#d1d5db]">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {mode === 'edit' ? 'Edit Blog Post' : 'Create New Blog Post'}
+          <h1 className="text-3xl font-bold text-[#1a1a1a]">
+            {mode === 'edit' ? 'Lorem Ipsum Dolor' : 'Sit Amet Consectetur'}
           </h1>
           <div className="flex space-x-3">
             <button
               type="button"
               onClick={handlePreview}
-              className="flex items-center px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="flex items-center px-4 py-2 text-white bg-[#255F38] rounded-lg hover:bg-[#1F7D53] transition-colors"
             >
               <Eye className="w-4 h-4 mr-2" />
               Preview
@@ -152,9 +145,9 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
           {/* Title and Slug */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="title" className="block text-sm font-medium text-[#666666] mb-2">
                 <FileText className="w-4 h-4 inline mr-2" />
-                Title *
+                Lorem Ipsum *
               </label>
               <input
                 type="text"
@@ -163,13 +156,13 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter blog post title"
+                className="w-full px-3 py-2 border border-[#d1d5db] rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent bg-white text-[#1a1a1a]"
+                placeholder="Lorem ipsum dolor sit amet"
               />
             </div>
             <div>
-              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-2">
-                Slug *
+              <label htmlFor="slug" className="block text-sm font-medium text-[#666666] mb-2">
+                Dolor Sit *
               </label>
               <input
                 type="text"
@@ -178,16 +171,16 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
                 value={formData.slug}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="url-friendly-slug"
+                className="w-full px-3 py-2 border border-[#d1d5db] rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent bg-white text-[#1a1a1a]"
+                placeholder="lorem-ipsum-dolor"
               />
             </div>
           </div>
 
           {/* Excerpt */}
           <div>
-            <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 mb-2">
-              Excerpt
+            <label htmlFor="excerpt" className="block text-sm font-medium text-[#666666] mb-2">
+              Amet Consectetur
             </label>
             <textarea
               id="excerpt"
@@ -195,91 +188,67 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
               value={formData.excerpt}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Brief description of the blog post"
+              className="w-full px-3 py-2 border border-[#d1d5db] rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent bg-white text-[#1a1a1a]"
+              placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             />
           </div>
 
           {/* Content */}
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-              Content *
+            <label htmlFor="content" className="block text-sm font-medium text-[#666666] mb-2">
+              Adipiscing Elit *
             </label>
             <RichTextEditor
               value={formData.content}
               onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-              placeholder="Write your blog post content here..."
+              placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
               className="mb-2"
             />
-            <p className="text-sm text-gray-500">
-              Use the toolbar above to format your content with headings, lists, links, and more.
+            <p className="text-sm text-[#666666]">
+              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
           </div>
 
           {/* Featured Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#666666] mb-2">
               <ImageIcon className="w-4 h-4 inline mr-2" />
-              Featured Image
+              Ut Enim Ad
             </label>
             <ImageUpload
               value={formData.featured_image_url}
               onChange={handleImageChange}
               className="mb-2"
             />
-            <p className="text-sm text-gray-500">
-              Upload a featured image for your blog post. Recommended size: 800x400px.
+            <p className="text-sm text-[#666666]">
+              Minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip.
             </p>
           </div>
 
-          {/* Author and Categories */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="author_id" className="block text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4 inline mr-2" />
-                Author *
-              </label>
-              <select
-                id="author_id"
-                name="author_id"
-                value={formData.author_id}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Select an author</option>
-                {authors.map(author => (
-                  <option key={author.id} value={author.id}>
-                    {author.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+          {/* Categories */}
+          <div>
+              <label className="block text-sm font-medium text-[#666666] mb-2">
                 <Tag className="w-4 h-4 inline mr-2" />
-                Categories
+                Ex Ea Commodo
               </label>
-              <div className="max-h-32 overflow-y-auto border border-gray-300 rounded-lg p-2">
-                {categories.map(category => (
-                  <label key={category.id} className="flex items-center space-x-2 py-1">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={() => handleCategoryToggle(category.id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">{category.title}</span>
-                  </label>
-                ))}
-              </div>
+            <div className="max-h-32 overflow-y-auto border border-[#255F38] rounded-lg p-2">
+              {categories.map(category => (
+                <label key={category.id} className="flex items-center space-x-2 py-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(category.id)}
+                    onChange={() => handleCategoryToggle(category.id)}
+                    className="rounded border-[#255F38] text-[#255F38] focus:ring-[#255F38]"
+                  />
+                  <span className="text-sm text-[#1F7D53]">{category.title}</span>
+                </label>
+              ))}
             </div>
           </div>
 
           {/* Publish Settings */}
           <div className="border-t pt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Publish Settings</h3>
+            <h3 className="text-lg font-medium text-[#a7f3d0] mb-4">Consequat Duis</h3>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="flex items-center space-x-2">
                 <input
@@ -288,11 +257,11 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
                   name="featured"
                   checked={formData.featured}
                   onChange={handleInputChange}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-[#255F38] text-[#255F38] focus:ring-[#255F38]"
                 />
-                <label htmlFor="featured" className="flex items-center text-sm text-gray-700">
+                <label htmlFor="featured" className="flex items-center text-sm text-[#1F7D53]">
                   <Star className="w-4 h-4 mr-1" />
-                  Featured Post
+                  Aute Iure
                 </label>
               </div>
 
@@ -303,18 +272,18 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
                   name="published"
                   checked={formData.published}
                   onChange={handleInputChange}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-[#255F38] text-[#255F38] focus:ring-[#255F38]"
                 />
-                <label htmlFor="published" className="text-sm text-gray-700">
-                  Publish Now
+                <label htmlFor="published" className="text-sm text-[#1F7D53]">
+                  Dolor In
                 </label>
               </div>
 
               {formData.published && (
                 <div>
-                  <label htmlFor="published_at" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="published_at" className="block text-sm font-medium text-[#1F7D53] mb-1">
                     <Calendar className="w-4 h-4 inline mr-1" />
-                    Publish Date
+                    Reprehenderit
                   </label>
                   <input
                     type="datetime-local"
@@ -322,7 +291,7 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
                     name="published_at"
                     value={formData.published_at}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#d1d5db] rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent bg-white text-[#1a1a1a]"
                   />
                 </div>
               )}
@@ -334,14 +303,14 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-6 py-2 text-[#255F38] bg-[#1F7D53] rounded-lg hover:bg-[#255F38] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center px-6 py-2 bg-[#255F38] text-white rounded-lg hover:bg-[#1F7D53] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? (
                 <>

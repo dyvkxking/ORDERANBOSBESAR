@@ -46,7 +46,7 @@ export default async function EditBlogPage({ params }: EditBlogPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-900">
       <BlogForm mode="edit" initialData={initialData} />
     </div>
   )
