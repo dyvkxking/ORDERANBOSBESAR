@@ -12,34 +12,34 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="lg:col-span-1">
             <div className="flex flex-col items-center text-center mb-6">
-              <div className="w-24 h-24 relative mb-4">
+              <div className="w-24 h-24 relative mb-4 overflow-hidden">
                 <Image
-                  src="/logo.png"
+                  src="/osis-logo.svg"
                   alt="Madrasah Tsanawiyah OSIS Logo"
                   fill
-                  className="object-contain"
+                  className="object-fill"
                 />
               </div>
               <Link href="/" className="text-2xl font-bold text-[#1a1a1a] hover:text-[#255F38] transition-colors">
-                Lorem Ipsum
+                OSIS MTs
               </Link>
             </div>
             <p className="mt-4 text-[#666666] text-sm leading-relaxed text-center">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-              incididunt ut labore et dolore magna aliqua.
+              Organisasi Siswa Intra Sekolah Madrasah Tsanawiyah. 
+              Membangun karakter siswa yang berakhlak mulia dan berprestasi.
             </p>
             <div className="mt-6 text-center">
-              <p className="text-sm text-[#255F38] mb-2">Lorem ipsum</p>
+              <p className="text-sm text-[#255F38] mb-2 font-semibold">Ikhlas Beramal</p>
               <div className="flex items-center justify-center space-x-2">
                 <Mail className="w-4 h-4 text-[#255F38]" />
-                <span className="text-sm text-[#666666]">lorem@ipsum.com</span>
+                <span className="text-sm text-[#666666]">osis@mts.edu</span>
               </div>
             </div>
           </div>
 
           {/* Navigation Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Dolor Sit</h3>
+            <h3 className="text-lg font-semibold mb-4">Menu</h3>
             <ul className="space-y-3">
               <li>
                 <Link href="/" className="text-[#666666] hover:text-[#1a1a1a] transition-colors text-sm">
@@ -61,7 +61,7 @@ export default function Footer() {
 
           {/* Social Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Amet Consectetur</h3>
+            <h3 className="text-lg font-semibold mb-4">Kontak & Media</h3>
             <div className="flex space-x-4 mb-6">
               <a
                 href="https://facebook.com"
@@ -105,18 +105,18 @@ export default function Footer() {
               </a>
             </div>
             <div className="text-sm text-[#255F38]">
-              <p>Subscribe to our newsletter</p>
+              <p>Berlangganan newsletter</p>
               <div className="mt-2 flex">
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Masukkan email Anda"
                   className="flex-1 px-3 py-2 bg-white border border-[#d1d5db] rounded-l-md text-[#1a1a1a] placeholder-[#666666] focus:outline-none focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                 />
                 <button 
                   type="button"
                   className="px-4 py-2 bg-[#255F38] hover:bg-[#1F7D53] rounded-r-md transition-colors"
                 >
-                  Subscribe
+                  Berlangganan
                 </button>
               </div>
             </div>

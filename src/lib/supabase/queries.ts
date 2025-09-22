@@ -17,6 +17,21 @@ export async function getPosts(): Promise<PostWithDetails[]> {
   return data || []
 }
 
+// Get all posts (including drafts) for admin management
+export async function getAllPosts(): Promise<PostWithDetails[]> {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching all posts:', error)
+    return []
+  }
+
+  return data || []
+}
+
 // Get a single post by slug
 export async function getPostBySlug(slug: string): Promise<PostWithDetails | null> {
   const { data, error } = await supabase
@@ -187,5 +202,27 @@ export async function searchPosts(query: string): Promise<PostWithDetails[]> {
   }
 
   return data || []
+}
+
+// Toggle featured status of a post
+export async function toggleFeaturedStatus(postId: string, currentFeatured: boolean): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const { data: post, error: postError } = await supabase
+      .from('posts')
+      .update({ featured: !currentFeatured })
+      .eq('id', postId)
+      .select()
+      .single()
+
+    if (postError) {
+      console.error('Error toggling featured status:', postError)
+      return { success: false, error: postError.message }
+    }
+
+    return { success: true, data: post }
+  } catch (error) {
+    console.error('Unexpected error toggling featured status:', error)
+    return { success: false, error: 'An unexpected error occurred' }
+  }
 }
 

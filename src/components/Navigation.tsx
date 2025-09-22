@@ -33,10 +33,22 @@ export default function Navigation() {
               Blog
             </Link>
             <Link
-              href="/about"
+              href="/kegiatan"
               className="text-[#666666] hover:text-[#1a1a1a] transition-colors font-medium"
             >
-              About
+              Kegiatan
+            </Link>
+            <Link
+              href="/layanan"
+              className="text-[#666666] hover:text-[#1a1a1a] transition-colors font-medium"
+            >
+              Layanan
+            </Link>
+            <Link
+              href="/kontak"
+              className="text-[#666666] hover:text-[#1a1a1a] transition-colors font-medium"
+            >
+              Kontak
             </Link>
           </div>
 
@@ -45,15 +57,6 @@ export default function Navigation() {
             <SearchBar placeholder="Search posts..." />
           </div>
 
-          {/* Action Links */}
-          <div className="hidden md:flex items-center space-x-4 pl-4 border-l border-[#255F38]">
-            <Link
-              href="/admin"
-              className="text-[#666666] hover:text-[#1a1a1a] transition-colors font-medium"
-            >
-              Admin
-            </Link>
-          </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -91,23 +94,28 @@ export default function Navigation() {
                   Blog
                 </Link>
                 <Link
-                  href="/about"
+                  href="/kegiatan"
                   className="block px-3 py-2 text-[#1F7D53] hover:text-[#a7f3d0] transition-colors font-medium"
                   onClick={() => setIsOpen(false)}
                 >
-                  About
+                  Kegiatan
+                </Link>
+                <Link
+                  href="/layanan"
+                  className="block px-3 py-2 text-[#1F7D53] hover:text-[#a7f3d0] transition-colors font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Layanan
+                </Link>
+                <Link
+                  href="/kontak"
+                  className="block px-3 py-2 text-[#1F7D53] hover:text-[#a7f3d0] transition-colors font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Kontak
                 </Link>
               </div>
               
-              <div className="border-t border-[#d1d5db] pt-2 mt-2">
-                <Link
-                  href="/admin"
-                  className="block px-3 py-2 text-[#1F7D53] hover:text-[#a7f3d0] transition-colors font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Admin
-                </Link>
-              </div>
             </div>
           </div>
         )}
