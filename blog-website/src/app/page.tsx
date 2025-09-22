@@ -15,7 +15,7 @@ export default async function Home() {
     const latestPosts = allPosts.slice(0, 6)
 
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#F2F2F2]">
         <HeroSection />
         
         <SimpleBigBlogCards posts={featuredPosts} />
@@ -30,11 +30,11 @@ export default async function Home() {
   } catch (error) {
     console.error('Error in Home component:', error)
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#F2F2F2]">
         <HeroSection />
         <div className="text-center py-20">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Content</h2>
-          <p className="text-gray-600">Please try refreshing the page.</p>
+          <h2 className="text-2xl font-bold text-[#1a1a1a] mb-4">Error Loading Content</h2>
+          <p className="text-[#255F38]">Please try refreshing the page.</p>
         </div>
       </div>
     )

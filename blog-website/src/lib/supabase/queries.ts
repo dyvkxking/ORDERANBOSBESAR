@@ -208,7 +208,6 @@ export async function createPost(postData: {
   excerpt?: string
   content?: string
   featured_image_url?: string
-  author_id: string
   featured?: boolean
   published?: boolean
   published_at?: string
@@ -224,7 +223,6 @@ export async function createPost(postData: {
         excerpt: postData.excerpt,
         content: postData.content,
         featured_image_url: postData.featured_image_url,
-        author_id: postData.author_id,
         featured: postData.featured || false,
         published: postData.published || false,
         published_at: postData.published ? (postData.published_at || new Date().toISOString()) : null
@@ -268,7 +266,6 @@ export async function updatePost(postId: string, postData: {
   excerpt?: string
   content?: string
   featured_image_url?: string
-  author_id?: string
   featured?: boolean
   published?: boolean
   published_at?: string
@@ -284,7 +281,6 @@ export async function updatePost(postId: string, postData: {
         excerpt: postData.excerpt,
         content: postData.content,
         featured_image_url: postData.featured_image_url,
-        author_id: postData.author_id,
         featured: postData.featured,
         published: postData.published,
         published_at: postData.published ? (postData.published_at || new Date().toISOString()) : null
@@ -397,5 +393,51 @@ export async function getPostById(postId: string): Promise<PostWithDetails | nul
     ...data,
     categories: data.categories?.map((pc: any) => pc.category) || []
   }
+}
+
+// Search posts by title, excerpt, and content
+export async function searchPosts(query: string): Promise<PostWithDetails[]> {
+  if (!query.trim()) {
+    return []
+  }
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:author_id (
+        id,
+        name,
+        slug,
+        bio,
+        image_url,
+        twitter_url,
+        linkedin_url,
+        github_url,
+        website_url
+      ),
+      categories:post_categories (
+        category:category_id (
+          id,
+          title,
+          slug,
+          description,
+          color
+        )
+      )
+    `)
+    .eq('published', true)
+    .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,content.ilike.%${query}%`)
+    .order('published_at', { ascending: false })
+
+  if (error) {
+    console.error('Error searching posts:', error)
+    return []
+  }
+
+  return data?.map(post => ({
+    ...post,
+    categories: post.categories?.map((pc: any) => pc.category) || []
+  })) || []
 }
 

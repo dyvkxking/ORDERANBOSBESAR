@@ -35,22 +35,47 @@ export default function RichTextEditor({
   const editorRef = useRef<HTMLDivElement>(null)
 
   const executeCommand = (command: string, value?: string) => {
-    document.execCommand(command, false, value)
-    editorRef.current?.focus()
-    updateContent()
+    try {
+      document.execCommand(command, false, value)
+      editorRef.current?.focus()
+      updateContent()
+    } catch (error) {
+      console.error('Error executing command:', command, error)
+    }
   }
 
   const updateContent = () => {
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML)
+      const content = editorRef.current.innerHTML
+      // Only update if content actually changed to prevent infinite loops
+      if (content !== value) {
+        onChange(content)
+      }
     }
   }
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault()
     const text = e.clipboardData.getData('text/plain')
-    document.execCommand('insertText', false, text)
-    updateContent()
+    try {
+      document.execCommand('insertText', false, text)
+      updateContent()
+    } catch (error) {
+      console.error('Error pasting text:', error)
+      // Fallback: insert text manually
+      if (editorRef.current) {
+        const selection = window.getSelection()
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0)
+          range.deleteContents()
+          range.insertNode(document.createTextNode(text))
+          range.collapse(false)
+          selection.removeAllRanges()
+          selection.addRange(range)
+          updateContent()
+        }
+      }
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -96,20 +121,64 @@ export default function RichTextEditor({
   }
 
   useEffect(() => {
-    if (editorRef.current && value !== editorRef.current.innerHTML) {
-      editorRef.current.innerHTML = value
+    if (editorRef.current) {
+      // Only update if the content is actually different
+      if (value !== editorRef.current.innerHTML) {
+        const selection = window.getSelection()
+        const range = selection?.getRangeAt(0)
+        const startOffset = range?.startOffset || 0
+        const endOffset = range?.endOffset || 0
+        const isFocused = document.activeElement === editorRef.current
+        
+        // Store the current selection before updating
+        const currentSelection = isFocused ? {
+          startOffset,
+          endOffset,
+          range
+        } : null
+        
+        editorRef.current.innerHTML = value || ''
+        
+        // Only restore cursor position if the editor was focused and we had a valid selection
+        if (isFocused && selection && currentSelection) {
+          try {
+            const newRange = document.createRange()
+            const textNode = editorRef.current.firstChild
+            if (textNode && textNode.textContent) {
+              const maxOffset = textNode.textContent.length
+              newRange.setStart(textNode, Math.min(currentSelection.startOffset, maxOffset))
+              newRange.setEnd(textNode, Math.min(currentSelection.endOffset, maxOffset))
+              selection.removeAllRanges()
+              selection.addRange(newRange)
+            } else {
+              // Fallback: place cursor at end
+              newRange.selectNodeContents(editorRef.current)
+              newRange.collapse(false)
+              selection.removeAllRanges()
+              selection.addRange(newRange)
+            }
+          } catch (e) {
+            // Fallback: place cursor at end
+            const newRange = document.createRange()
+            newRange.selectNodeContents(editorRef.current)
+            newRange.collapse(false)
+            selection.removeAllRanges()
+            selection.addRange(newRange)
+          }
+        }
+      }
     }
   }, [value])
 
   return (
-    <div className={`rich-text-editor border border-gray-300 rounded-lg ${className}`}>
+    <div className={`rich-text-editor border border-[#d1d5db] rounded-lg ${className}`}>
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-[#d1d5db] bg-[#e5e5e5] rounded-t-lg">
         {/* Undo/Redo */}
         <button
           type="button"
           onClick={undo}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Undo"
         >
           <Undo className="w-4 h-4" />
@@ -117,19 +186,19 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={redo}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Redo"
         >
           <Redo className="w-4 h-4" />
         </button>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Text Formatting */}
         <button
           type="button"
           onClick={() => executeCommand('bold')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Bold"
         >
           <Bold className="w-4 h-4" />
@@ -137,7 +206,7 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={() => executeCommand('italic')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Italic"
         >
           <Italic className="w-4 h-4" />
@@ -145,20 +214,20 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={() => executeCommand('underline')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Underline"
         >
           <Underline className="w-4 h-4" />
         </button>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Headings */}
         <div className="flex items-center">
           <button
             type="button"
             onClick={() => insertHeading(1)}
-            className="px-2 py-1 text-sm font-bold hover:bg-gray-200 rounded transition-colors"
+            className="px-2 py-1 text-sm font-bold hover:bg-[#1F7D53] rounded transition-colors text-[#1F7D53]"
             title="Heading 1"
           >
             H1
@@ -166,7 +235,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => insertHeading(2)}
-            className="px-2 py-1 text-sm font-bold hover:bg-gray-200 rounded transition-colors"
+            className="px-2 py-1 text-sm font-bold hover:bg-[#1F7D53] rounded transition-colors text-[#1F7D53]"
             title="Heading 2"
           >
             H2
@@ -174,7 +243,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => insertHeading(3)}
-            className="px-2 py-1 text-sm font-bold hover:bg-gray-200 rounded transition-colors"
+            className="px-2 py-1 text-sm font-bold hover:bg-[#1F7D53] rounded transition-colors text-[#1F7D53]"
             title="Heading 3"
           >
             H3
@@ -182,20 +251,20 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={insertParagraph}
-            className="px-2 py-1 text-sm hover:bg-gray-200 rounded transition-colors"
+            className="px-2 py-1 text-sm hover:bg-[#1F7D53] rounded transition-colors text-[#1F7D53]"
             title="Paragraph"
           >
             P
           </button>
         </div>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Lists */}
         <button
           type="button"
           onClick={() => executeCommand('insertUnorderedList')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Bullet List"
         >
           <List className="w-4 h-4" />
@@ -203,19 +272,19 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={() => executeCommand('insertOrderedList')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Numbered List"
         >
           <ListOrdered className="w-4 h-4" />
         </button>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Special Formatting */}
         <button
           type="button"
           onClick={insertQuote}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Quote"
         >
           <Quote className="w-4 h-4" />
@@ -223,7 +292,7 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={insertCode}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Code Block"
         >
           <Code className="w-4 h-4" />
@@ -231,19 +300,19 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={insertLink}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Insert Link"
         >
           <Link className="w-4 h-4" />
         </button>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Alignment */}
         <button
           type="button"
           onClick={() => executeCommand('justifyLeft')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Align Left"
         >
           <AlignLeft className="w-4 h-4" />
@@ -251,7 +320,7 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={() => executeCommand('justifyCenter')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Align Center"
         >
           <AlignCenter className="w-4 h-4" />
@@ -259,19 +328,19 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={() => executeCommand('justifyRight')}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Align Right"
         >
           <AlignRight className="w-4 h-4" />
         </button>
         
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
         
         {/* Clear Formatting */}
         <button
           type="button"
           onClick={clearFormatting}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
           title="Clear Formatting"
         >
           <Type className="w-4 h-4" />
@@ -287,18 +356,17 @@ export default function RichTextEditor({
         onKeyDown={handleKeyDown}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`min-h-[200px] p-4 focus:outline-none ${
-          isFocused ? 'ring-2 ring-blue-500' : ''
+        className={`min-h-[200px] p-4 focus:outline-none bg-white text-[#1a1a1a] ${
+          isFocused ? 'ring-2 ring-[#255F38]' : ''
         }`}
         style={{ minHeight: '200px' }}
-        dangerouslySetInnerHTML={{ __html: value }}
         data-placeholder={placeholder}
       />
       
       <style jsx global>{`
         .rich-text-editor [contenteditable]:empty:before {
           content: attr(data-placeholder);
-          color: #9ca3af;
+          color: #666666;
           font-style: italic;
         }
         .rich-text-editor [contenteditable] {
@@ -327,10 +395,11 @@ export default function RichTextEditor({
           padding-left: 1.5rem;
         }
         .rich-text-editor [contenteditable] blockquote {
-          border-left: 4px solid #e5e7eb;
+          border-left: 4px solid #255F38;
           padding-left: 1rem;
           margin: 0.5rem 0;
           font-style: italic;
+          color: #666666;
         }
         .rich-text-editor [contenteditable] pre {
           background-color: #f3f4f6;
@@ -338,9 +407,10 @@ export default function RichTextEditor({
           border-radius: 0.375rem;
           margin: 0.5rem 0;
           font-family: monospace;
+          color: #1a1a1a;
         }
         .rich-text-editor [contenteditable] a {
-          color: #3b82f6;
+          color: #255F38;
           text-decoration: underline;
         }
       `}</style>
