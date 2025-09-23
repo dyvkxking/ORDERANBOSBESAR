@@ -45,10 +45,10 @@ export default function Navigation() {
               Layanan
             </Link>
             <Link
-              href="/kontak"
+              href="/contact"
               className="text-[#666666] hover:text-[#1a1a1a] transition-colors font-medium"
             >
-              Kontak
+              Contact
             </Link>
           </div>
 
@@ -108,11 +108,11 @@ export default function Navigation() {
                   Layanan
                 </Link>
                 <Link
-                  href="/kontak"
+                  href="/contact"
                   className="block px-3 py-2 text-[#1F7D53] hover:text-[#a7f3d0] transition-colors font-medium"
                   onClick={() => setIsOpen(false)}
                 >
-                  Kontak
+                  Contact
                 </Link>
               </div>
               

@@ -1,281 +1,228 @@
 import type { Metadata } from "next"
 import { 
-  BookOpen, 
-  Users, 
-  FileText, 
-  Calendar, 
-  MessageCircle, 
-  Shield, 
-  Award,
+  Construction,
   Clock,
+  Rocket,
+  Mail,
+  Calendar,
+  Users,
+  Lightbulb,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  Star,
+  Heart
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Layanan | OSIS MTs",
-  description: "Berbagai layanan yang disediakan OSIS Madrasah Tsanawiyah untuk siswa",
+  title: "Layanan | Lorem Ipsum",
+  description: "Halaman layanan sedang dalam tahap pengembangan",
 }
-
-const services = [
-  {
-    id: 1,
-    title: "Konsultasi Akademik",
-    description: "Layanan konsultasi untuk membantu siswa dalam mengatasi kesulitan belajar dan meningkatkan prestasi akademik",
-    icon: BookOpen,
-    features: [
-      "Konsultasi mata pelajaran sulit",
-      "Tips dan strategi belajar efektif",
-      "Bimbingan persiapan ujian",
-      "Motivasi dan dukungan belajar"
-    ],
-    availability: "Senin - Jumat, 13:00 - 15:00",
-    contact: "konsultasi@osis-mts.edu"
-  },
-  {
-    id: 2,
-    title: "Bimbingan Kepemimpinan",
-    description: "Program pengembangan kepemimpinan untuk membentuk karakter pemimpin yang berakhlak mulia",
-    icon: Users,
-    features: [
-      "Pelatihan kepemimpinan dasar",
-      "Workshop komunikasi efektif",
-      "Pengembangan soft skills",
-      "Mentoring personal"
-    ],
-    availability: "Sabtu, 08:00 - 12:00",
-    contact: "kepemimpinan@osis-mts.edu"
-  },
-  {
-    id: 3,
-    title: "Layanan Administrasi",
-    description: "Bantuan administrasi untuk berbagai keperluan siswa seperti surat keterangan, izin, dan dokumen lainnya",
-    icon: FileText,
-    features: [
-      "Surat keterangan aktif",
-      "Surat izin kegiatan",
-      "Dokumen persyaratan beasiswa",
-      "Legalisasi dokumen"
-    ],
-    availability: "Senin - Jumat, 08:00 - 16:00",
-    contact: "admin@osis-mts.edu"
-  },
-  {
-    id: 4,
-    title: "Konseling dan Bimbingan",
-    description: "Layanan konseling untuk membantu siswa mengatasi masalah pribadi, sosial, dan akademik",
-    icon: MessageCircle,
-    features: [
-      "Konseling pribadi",
-      "Bimbingan sosial",
-      "Penyelesaian konflik",
-      "Dukungan emosional"
-    ],
-    availability: "Setiap hari, 09:00 - 17:00",
-    contact: "konseling@osis-mts.edu"
-  },
-  {
-    id: 5,
-    title: "Program Beasiswa",
-    description: "Informasi dan bantuan pendaftaran berbagai program beasiswa untuk siswa berprestasi",
-    icon: Award,
-    features: [
-      "Informasi beasiswa terkini",
-      "Bantuan pendaftaran",
-      "Persiapan dokumen",
-      "Mentoring seleksi"
-    ],
-    availability: "Senin - Jumat, 10:00 - 14:00",
-    contact: "beasiswa@osis-mts.edu"
-  },
-  {
-    id: 6,
-    title: "Keamanan dan Perlindungan",
-    description: "Layanan keamanan dan perlindungan untuk memastikan lingkungan belajar yang aman dan nyaman",
-    icon: Shield,
-    features: [
-      "Patroli keamanan",
-      "Penanganan bullying",
-      "Sistem pelaporan insiden",
-      "Koordinasi dengan pihak sekolah"
-    ],
-    availability: "24/7",
-    contact: "keamanan@osis-mts.edu"
-  }
-]
-
-const processes = [
-  {
-    step: 1,
-    title: "Identifikasi Kebutuhan",
-    description: "Siswa mengidentifikasi kebutuhan layanan yang diperlukan"
-  },
-  {
-    step: 2,
-    title: "Konsultasi Awal",
-    description: "Konsultasi dengan petugas OSIS untuk memahami situasi"
-  },
-  {
-    step: 3,
-    title: "Penyusunan Rencana",
-    description: "Menyusun rencana tindakan yang sesuai dengan kebutuhan"
-  },
-  {
-    step: 4,
-    title: "Implementasi Layanan",
-    description: "Pelaksanaan layanan sesuai dengan rencana yang telah disusun"
-  },
-  {
-    step: 5,
-    title: "Evaluasi dan Tindak Lanjut",
-    description: "Evaluasi hasil dan rencana tindak lanjut jika diperlukan"
-  }
-]
 
 export default function LayananPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] text-white py-16">
+      <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Layanan OSIS</h1>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              Berbagai layanan yang disediakan OSIS untuk mendukung perkembangan dan kesejahteraan siswa
+            {/* Construction Icon */}
+            <div className="flex justify-center mb-8">
+              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+                <Construction className="w-12 h-12 text-white animate-pulse" />
+              </div>
+            </div>
+            
+            <h1 className="text-5xl font-bold mb-6">Layanan</h1>
+            <p className="text-xl text-green-100 max-w-4xl mx-auto leading-relaxed mb-8">
+              Halaman layanan sedang dalam tahap pengembangan
             </p>
+            
+            {/* Status Badge */}
+            <div className="inline-flex items-center px-6 py-3 bg-white/20 rounded-full backdrop-blur-sm border border-white/30">
+              <Clock className="w-5 h-5 mr-2 animate-spin" />
+              <span className="font-medium">Coming Soon</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Services Section */}
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-            Daftar Layanan
-          </h2>
-          <p className="text-gray-600 text-center max-w-2xl mx-auto">
-            OSIS menyediakan berbagai layanan untuk mendukung kebutuhan siswa dalam berbagai aspek
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => {
-            const Icon = service.icon
-            return (
-              <div key={service.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="p-6">
-                  {/* Header */}
-                  <div className="flex items-center mb-4">
-                    <div className="p-3 bg-[#255F38]/10 rounded-lg mr-4">
-                      <Icon className="w-6 h-6 text-[#255F38]" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {service.title}
-                    </h3>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {service.description}
-                  </p>
-
-                  {/* Features */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">Fitur Layanan:</h4>
-                    <ul className="space-y-1">
-                      {service.features.map((feature, index) => (
-                        <li key={index} className="flex items-center text-sm text-gray-600">
-                          <CheckCircle className="w-4 h-4 mr-2 text-green-500 flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Availability */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Clock className="w-4 h-4 mr-2 text-[#255F38]" />
-                      <span className="font-medium">Jam Layanan:</span>
-                    </div>
-                    <p className="text-sm text-gray-700">{service.availability}</p>
-                  </div>
-
-                  {/* Contact */}
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-1">Kontak:</p>
-                    <p className="text-sm text-[#255F38] font-medium">{service.contact}</p>
-                  </div>
-
-                  {/* Action Button */}
-                  <button className="w-full bg-[#255F38] text-white py-2 px-4 rounded-lg hover:bg-[#1F7D53] transition-colors text-sm font-medium flex items-center justify-center">
-                    <span>Ajukan Layanan</span>
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Process Section */}
-        <div className="mt-16">
-          <div className="text-center mb-12">
+        {/* Development Status */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Rocket className="w-8 h-8 text-orange-600" />
+            </div>
+            
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Prosedur Layanan
+              Sedang Dalam Pengembangan
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Berikut adalah langkah-langkah untuk mengakses layanan OSIS
+            
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+              Kami sedang bekerja keras untuk menghadirkan layanan terbaik untuk Anda. 
+              Halaman ini akan segera hadir dengan fitur-fitur menarik dan bermanfaat.
             </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-              {processes.map((process, index) => (
-                <div key={process.step} className="text-center">
-                  <div className="relative">
-                    <div className="w-12 h-12 bg-[#255F38] text-white rounded-full flex items-center justify-center text-lg font-bold mx-auto mb-4">
-                      {process.step}
-                    </div>
-                    {index < processes.length - 1 && (
-                      <div className="hidden md:block absolute top-6 left-full w-full h-0.5 bg-gray-300 transform translate-x-4"></div>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {process.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {process.description}
-                  </p>
-                </div>
-              ))}
+            
+            {/* Progress Bar */}
+            <div className="max-w-md mx-auto mb-8">
+              <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Progress Pengembangan</span>
+                <span>75%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] h-3 rounded-full transition-all duration-1000" style={{width: '75%'}}></div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Contact Section */}
-        <div className="mt-16">
-          <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] rounded-lg p-8 text-white text-center">
-            <h2 className="text-2xl font-bold mb-4">
-              Butuh Bantuan Lebih Lanjut?
-            </h2>
-            <p className="text-green-100 mb-6 max-w-2xl mx-auto">
-              Tim OSIS siap membantu Anda dengan berbagai kebutuhan. Jangan ragu untuk menghubungi kami.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-[#255F38] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium">
-                Hubungi Kami
-              </button>
-              <button className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#255F38] transition-colors font-medium">
-                FAQ
-              </button>
+        {/* Coming Features */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
+            Fitur yang Akan Hadir
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Konsultasi Online</h4>
+              <p className="text-sm text-gray-600">Layanan konsultasi langsung dengan tim ahli</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar className="w-6 h-6 text-green-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Booking Layanan</h4>
+              <p className="text-sm text-gray-600">Sistem pemesanan layanan yang mudah dan praktis</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lightbulb className="w-6 h-6 text-purple-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Tips & Panduan</h4>
+              <p className="text-sm text-gray-600">Koleksi tips dan panduan untuk berbagai kebutuhan</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-6 h-6 text-red-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Support 24/7</h4>
+              <p className="text-sm text-gray-600">Dukungan pelanggan yang siap membantu kapan saja</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="w-6 h-6 text-yellow-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Rating & Review</h4>
+              <p className="text-sm text-gray-600">Sistem penilaian untuk meningkatkan kualitas layanan</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6 text-center">
+              <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-6 h-6 text-pink-600" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Komunitas</h4>
+              <p className="text-sm text-gray-600">Bergabung dengan komunitas untuk berbagi pengalaman</p>
             </div>
           </div>
+        </div>
+
+        {/* Timeline */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+          <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
+            Timeline Pengembangan
+          </h3>
+          
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Analisis Kebutuhan</h4>
+                <p className="text-sm text-gray-600">Maret 2024 - Selesai</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Desain UI/UX</h4>
+                <p className="text-sm text-gray-600">April 2024 - Selesai</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                <Clock className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Pengembangan Backend</h4>
+                <p className="text-sm text-gray-600">Mei 2024 - Sedang Berlangsung</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-4">
+                <Clock className="w-5 h-5 text-gray-600" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Testing & Debugging</h4>
+                <p className="text-sm text-gray-600">Juni 2024 - Akan Dimulai</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-4">
+                <Clock className="w-5 h-5 text-gray-600" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Launch & Deployment</h4>
+                <p className="text-sm text-gray-600">Juli 2024 - Target Rilis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact & Notification */}
+        <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] rounded-xl p-8 text-white text-center">
+          <h3 className="text-2xl font-bold mb-4">
+            Ingin Mendapatkan Update?
+          </h3>
+          <p className="text-green-100 mb-6 max-w-2xl mx-auto">
+            Daftarkan email Anda untuk mendapatkan notifikasi ketika layanan sudah siap digunakan
+          </p>
+          
+          <div className="max-w-md mx-auto flex gap-4">
+            <input
+              type="email"
+              placeholder="Masukkan email Anda"
+              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
+            />
+            <button className="bg-white text-[#255F38] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium flex items-center">
+              <Mail className="w-4 h-4 mr-2" />
+              Daftar
+            </button>
+          </div>
+          
+          <p className="text-green-200 text-sm mt-4">
+            Kami akan mengirimkan update perkembangan dan notifikasi peluncuran
+          </p>
         </div>
       </div>
     </div>
   )
 }
+
 
 
 

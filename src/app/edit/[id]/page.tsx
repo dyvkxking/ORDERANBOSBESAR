@@ -4,13 +4,14 @@ import BlogForm from "@/components/BlogForm"
 import { getPostById } from "@/lib/supabase/queries"
 
 interface EditBlogPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: EditBlogPageProps): Promise<Metadata> {
-  const post = await getPostById(params.id)
+  const { id } = await params
+  const post = await getPostById(id)
   
   if (!post) {
     return {
@@ -25,7 +26,8 @@ export async function generateMetadata({ params }: EditBlogPageProps): Promise<M
 }
 
 export default async function EditBlogPage({ params }: EditBlogPageProps) {
-  const post = await getPostById(params.id)
+  const { id } = await params
+  const post = await getPostById(id)
 
   if (!post) {
     notFound()

@@ -5,9 +5,9 @@ import { Search, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string
-  }
+  }>
 }
 
 function SearchResults({ query }: { query: string }) {
@@ -128,8 +128,8 @@ function SearchLoadingSkeleton() {
   )
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || ''
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { q: query = '' } = await searchParams
 
   if (!query) {
     return (
