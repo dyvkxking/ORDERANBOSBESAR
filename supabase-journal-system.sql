@@ -157,3 +157,6 @@ CREATE POLICY "Allow admin full access to program_kerja" ON program_kerja FOR AL
 CREATE POLICY "Allow admin full access to program_items" ON program_items FOR ALL USING (true);
 CREATE POLICY "Allow admin full access to admin_users" ON admin_users FOR ALL USING (true);
 
+
+
+

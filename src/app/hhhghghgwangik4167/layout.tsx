@@ -4,7 +4,6 @@ import {
   LayoutDashboard, 
   Plus, 
   Settings, 
-  BarChart3,
   LogOut
 } from "lucide-react"
 
@@ -18,7 +17,6 @@ function AdminSidebar() {
     { href: "/hhhghghgwangik4167", label: "Dashboard", icon: LayoutDashboard },
     { href: "/hhhghghgwangik4167/create", label: "Create Post", icon: Plus },
     { href: "/hhhghghgwangik4167/manage", label: "Manage Posts", icon: Settings },
-    { href: "/hhhghghgwangik4167/analytics", label: "Analytics", icon: BarChart3 },
   ]
 
   return (

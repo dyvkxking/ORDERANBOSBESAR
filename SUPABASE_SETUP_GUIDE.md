@@ -184,3 +184,6 @@ curl -v http://localhost:3000/api/jurnal
 # Di Supabase Dashboard > Table Editor
 ```
 
+
+
+

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { 
+  ArrowLeft,
   BookOpen, 
   Search, 
   Filter,
@@ -15,7 +16,7 @@ import {
 import { useJurnal } from "@/hooks/useJurnal"
 import KegiatanNavigation from "@/components/KegiatanNavigation"
 
-export default function KegiatanPage() {
+export default function JurnalPage() {
   const { jurnal, loading: jurnalLoading, error: jurnalError } = useJurnal()
 
   // Debug logging
@@ -26,11 +27,16 @@ export default function KegiatanPage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold mb-6">Jurnal Kegiatan</h1>
-            <p className="text-xl text-green-100 max-w-4xl mx-auto leading-relaxed">
-              Refleksi, evaluasi, dan pembelajaran dari setiap kegiatan yang telah dilaksanakan
-            </p>
+          <div className="flex items-center mb-6">
+            <Link href="/kegiatan" className="mr-4 p-2 hover:bg-white/10 rounded-lg transition-colors">
+              <ArrowLeft className="w-6 h-6" />
+            </Link>
+            <div>
+              <h1 className="text-5xl font-bold">Jurnal Kegiatan</h1>
+              <p className="text-xl text-green-100 mt-2">
+                Refleksi, evaluasi, dan pembelajaran dari setiap kegiatan yang telah dilaksanakan
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -67,40 +73,40 @@ export default function KegiatanPage() {
           </div>
         </div>
 
-        {/* Debug Section */}
-        <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-semibold text-blue-900 mb-2">Debug Info:</h3>
-          <p className="text-sm text-blue-800">
-            <strong>Loading:</strong> {jurnalLoading ? 'Yes' : 'No'} | 
-            <strong> Error:</strong> {jurnalError || 'None'} | 
-            <strong> Count:</strong> {jurnal.length} entries
-          </p>
-          {jurnal.length > 0 && (
-            <details className="mt-2">
-              <summary className="text-sm text-blue-800 cursor-pointer">Show raw data</summary>
-              <pre className="text-xs text-blue-700 mt-2 bg-white p-2 rounded overflow-auto max-h-32">
-                {JSON.stringify(jurnal, null, 2)}
-              </pre>
-            </details>
-          )}
-        </div>
+               {/* Debug Section */}
+               <div className="mb-8 p-4 bg-blue-50 rounded-lg">
+                 <h3 className="font-semibold text-blue-900 mb-2">Debug Info:</h3>
+                 <p className="text-sm text-blue-800">
+                   <strong>Loading:</strong> {jurnalLoading ? 'Yes' : 'No'} | 
+                   <strong> Error:</strong> {jurnalError || 'None'} | 
+                   <strong> Count:</strong> {jurnal.length} entries
+                 </p>
+                 {jurnal.length > 0 && (
+                   <details className="mt-2">
+                     <summary className="text-sm text-blue-800 cursor-pointer">Show raw data</summary>
+                     <pre className="text-xs text-blue-700 mt-2 bg-white p-2 rounded overflow-auto max-h-32">
+                       {JSON.stringify(jurnal, null, 2)}
+                     </pre>
+                   </details>
+                 )}
+               </div>
 
-        {/* Jurnal Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {jurnalLoading ? (
-            <div className="col-span-2 text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#255F38] mx-auto"></div>
-              <p className="mt-2 text-gray-600">Memuat jurnal...</p>
-            </div>
-          ) : jurnalError ? (
-            <div className="col-span-2 text-center py-8">
-              <p className="text-red-600">Error: {jurnalError}</p>
-            </div>
-          ) : jurnal.length === 0 ? (
-            <div className="col-span-2 text-center py-8">
-              <p className="text-gray-600">Belum ada jurnal yang tersedia</p>
-            </div>
-          ) : (
+               {/* Jurnal Cards */}
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                 {jurnalLoading ? (
+                   <div className="col-span-2 text-center py-8">
+                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#255F38] mx-auto"></div>
+                     <p className="mt-2 text-gray-600">Memuat jurnal...</p>
+                   </div>
+                 ) : jurnalError ? (
+                   <div className="col-span-2 text-center py-8">
+                     <p className="text-red-600">Error: {jurnalError}</p>
+                   </div>
+                 ) : jurnal.length === 0 ? (
+                   <div className="col-span-2 text-center py-8">
+                     <p className="text-gray-600">Belum ada jurnal yang tersedia</p>
+                   </div>
+                 ) : (
             jurnal.map((jurnalItem) => (
               <div key={jurnalItem.id} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
                 {/* Header */}
@@ -173,7 +179,3 @@ export default function KegiatanPage() {
     </div>
   )
 }
-
-
-
-

@@ -1,416 +1,717 @@
-'use client'
+"use client"
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { 
   Bold, 
   Italic, 
   Underline, 
+  Link as LinkIcon, 
   List, 
   ListOrdered, 
-  Quote, 
-  Link, 
-  Type, 
-  AlignLeft, 
-  AlignCenter, 
+  Heading1, 
+  Heading2, 
+  Heading3, 
+  Image as ImageIcon,
+  Type,
+  AlignLeft,
+  AlignCenter,
   AlignRight,
+  Quote,
   Code,
   Undo,
   Redo
 } from 'lucide-react'
 
 interface RichTextEditorProps {
-  value: string
-  onChange: (value: string) => void
+  content: string
+  onChange: (content: string) => void
   placeholder?: string
   className?: string
 }
 
 export default function RichTextEditor({ 
-  value, 
+  content, 
   onChange, 
   placeholder = "Write your content here...",
   className = ""
 }: RichTextEditorProps) {
-  const [isFocused, setIsFocused] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
+  const [isFocused, setIsFocused] = useState(false)
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
+  const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set())
 
-  const executeCommand = (command: string, value?: string) => {
-    try {
-      document.execCommand(command, false, value)
-      editorRef.current?.focus()
-      updateContent()
-    } catch (error) {
-      console.error('Error executing command:', command, error)
-    }
-  }
-
-  const updateContent = () => {
+  // Update content state
+  const updateContent = useCallback(() => {
     if (editorRef.current) {
-      const content = editorRef.current.innerHTML
-      // Only update if content actually changed to prevent infinite loops
-      if (content !== value) {
-        onChange(content)
+      onChange(editorRef.current.innerHTML)
+    }
+  }, [onChange])
+
+  // Handle input changes
+  const handleInput = useCallback((e: React.FormEvent<HTMLDivElement>) => {
+    updateContent()
+    updateActiveFormats()
+  }, [updateContent])
+
+  // Update active formats based on current selection
+  const updateActiveFormats = useCallback(() => {
+    if (!editorRef.current) return
+    
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const range = selection.getRangeAt(0)
+    const formats = new Set<string>()
+
+    // Check for bold
+    if (document.queryCommandState('bold')) {
+      formats.add('bold')
+    }
+
+    // Check for italic
+    if (document.queryCommandState('italic')) {
+      formats.add('italic')
+    }
+
+    // Check for underline
+    if (document.queryCommandState('underline')) {
+      formats.add('underline')
+    }
+
+    // Check for heading levels
+    const container = range.commonAncestorContainer
+    let element = container.nodeType === Node.TEXT_NODE ? container.parentElement : container as Element
+    
+    while (element && element !== editorRef.current) {
+      if (element.tagName === 'H1') {
+        formats.add('h1')
+        break
+      } else if (element.tagName === 'H2') {
+        formats.add('h2')
+        break
+      } else if (element.tagName === 'H3') {
+        formats.add('h3')
+        break
+      } else if (element.tagName === 'BLOCKQUOTE') {
+        formats.add('blockquote')
+        break
+      } else if (element.tagName === 'PRE') {
+        formats.add('code')
+        break
+      }
+      element = element.parentElement
+    }
+
+    // Check for list items
+    if (element) {
+      if (element.tagName === 'UL' || element.closest('ul')) {
+        formats.add('ul')
+      } else if (element.tagName === 'OL' || element.closest('ol')) {
+        formats.add('ol')
       }
     }
-  }
 
-  const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault()
-    const text = e.clipboardData.getData('text/plain')
+    // Check for text alignment
+    if (element) {
+      const computedStyle = window.getComputedStyle(element)
+      const textAlign = computedStyle.textAlign
+      if (textAlign === 'center') {
+        formats.add('center')
+      } else if (textAlign === 'right') {
+        formats.add('right')
+      } else {
+        formats.add('left')
+      }
+    }
+
+    setActiveFormats(formats)
+  }, [])
+
+  // Modern command execution using Selection API
+  const execCommand = useCallback((command: string, value?: string) => {
+    if (!editorRef.current) return
+    
+    editorRef.current.focus()
+    
     try {
-      document.execCommand('insertText', false, text)
-      updateContent()
-    } catch (error) {
-      console.error('Error pasting text:', error)
-      // Fallback: insert text manually
-      if (editorRef.current) {
-        const selection = window.getSelection()
-        if (selection && selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0)
-          range.deleteContents()
-          range.insertNode(document.createTextNode(text))
-          range.collapse(false)
-          selection.removeAllRanges()
-          selection.addRange(range)
+      // Use execCommand for basic formatting
+      if (document.queryCommandSupported && document.queryCommandSupported(command)) {
+        const success = document.execCommand(command, false, value)
+        if (success) {
           updateContent()
+          updateActiveFormats()
+        }
+      } else {
+        // Fallback for unsupported commands
+        console.warn(`Command ${command} not supported, using fallback`)
+      }
+    } catch (error) {
+      console.error('Error executing command:', error)
+    }
+  }, [updateContent, updateActiveFormats])
+
+  // Enhanced command execution with better support
+  const execCommandEnhanced = useCallback((command: string, value?: string) => {
+    if (!editorRef.current) return
+    
+    editorRef.current.focus()
+    
+    try {
+      // Force selection if none exists
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0) {
+        const range = document.createRange()
+        range.selectNodeContents(editorRef.current)
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+      }
+
+      // Execute command
+      const success = document.execCommand(command, false, value)
+      
+      if (success) {
+        updateContent()
+        updateActiveFormats()
+      } else {
+        console.warn(`Command ${command} failed`)
+      }
+    } catch (error) {
+      console.error('Error executing command:', error)
+    }
+  }, [updateContent, updateActiveFormats])
+
+  // Handle key events for better functionality
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Handle Ctrl+B for bold
+    if (e.ctrlKey && e.key === 'b') {
+      e.preventDefault()
+      execCommand('bold')
+    }
+    // Handle Ctrl+I for italic
+    if (e.ctrlKey && e.key === 'i') {
+      e.preventDefault()
+      execCommand('italic')
+    }
+    // Handle Ctrl+U for underline
+    if (e.ctrlKey && e.key === 'u') {
+      e.preventDefault()
+      execCommand('underline')
+    }
+  }, [execCommand])
+
+  // Handle paste events for images
+  const handlePaste = useCallback((e: ClipboardEvent) => {
+    e.preventDefault()
+    
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      
+      if (item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile()
+        if (file) {
+          // Convert file to data URL
+          const reader = new FileReader()
+          reader.onload = (event) => {
+            const dataUrl = event.target?.result as string
+            insertImage(dataUrl)
+          }
+          reader.readAsDataURL(file)
+        }
+      } else if (item.type === 'text/plain') {
+        // Handle text paste
+        const text = e.clipboardData?.getData('text/plain')
+        if (text) {
+          document.execCommand('insertText', false, text)
         }
       }
     }
+  }, [])
+
+  // Insert image into editor
+  const insertImage = (src: string) => {
+    if (!editorRef.current) return
+    
+    const img = document.createElement('img')
+    img.src = src
+    img.style.maxWidth = '100%'
+    img.style.height = 'auto'
+    img.style.display = 'block'
+    img.style.margin = '10px 0'
+    img.style.borderRadius = '8px'
+    img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'
+    img.style.cursor = 'pointer'
+    
+    // Add click handler to select image
+    img.addEventListener('click', () => {
+      const selection = window.getSelection()
+      if (selection) {
+        selection.removeAllRanges()
+        const range = document.createRange()
+        range.selectNode(img)
+        selection.addRange(range)
+      }
+    })
+    
+    // Insert image at cursor position
+    const selection = window.getSelection()
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      range.deleteContents()
+      range.insertNode(img)
+      
+      // Move cursor after image
+      range.setStartAfter(img)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    } else {
+      // If no selection, append to end
+      editorRef.current.appendChild(img)
+    }
+    
+    // Update content
+    updateContent()
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Tab') {
-      e.preventDefault()
-      executeCommand('indent')
+  // Handle image button click
+  const handleImageClick = () => {
+    setShowImageModal(true)
+  }
+
+  // Handle image URL submission
+  const handleImageSubmit = () => {
+    if (imageUrl.trim()) {
+      insertImage(imageUrl.trim())
+      setImageUrl('')
+      setShowImageModal(false)
     }
   }
 
-  const insertLink = () => {
-    const url = prompt('Enter URL:')
-    if (url) {
-      executeCommand('createLink', url)
+  // Handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string
+        insertImage(dataUrl)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
-  const insertCode = () => {
-    executeCommand('formatBlock', 'pre')
-  }
+  // Set up paste event listener
+  useEffect(() => {
+    const editor = editorRef.current
+    if (editor) {
+      editor.addEventListener('paste', handlePaste)
+      return () => {
+        editor.removeEventListener('paste', handlePaste)
+      }
+    }
+  }, [handlePaste])
 
-  const insertQuote = () => {
-    executeCommand('formatBlock', 'blockquote')
-  }
-
-  const insertHeading = (level: number) => {
-    executeCommand('formatBlock', `h${level}`)
-  }
-
-  const insertParagraph = () => {
-    executeCommand('formatBlock', 'p')
-  }
-
-  const undo = () => {
-    executeCommand('undo')
-  }
-
-  const redo = () => {
-    executeCommand('redo')
-  }
-
-  const clearFormatting = () => {
-    executeCommand('removeFormat')
-  }
-
+  // Set initial content
   useEffect(() => {
     if (editorRef.current) {
-      // Only update if the content is actually different
-      if (value !== editorRef.current.innerHTML) {
-        const selection = window.getSelection()
-        const range = selection?.getRangeAt(0)
-        const startOffset = range?.startOffset || 0
-        const endOffset = range?.endOffset || 0
-        const isFocused = document.activeElement === editorRef.current
-        
-        // Store the current selection before updating
-        const currentSelection = isFocused ? {
-          startOffset,
-          endOffset,
-          range
-        } : null
-        
-        editorRef.current.innerHTML = value || ''
-        
-        // Only restore cursor position if the editor was focused and we had a valid selection
-        if (isFocused && selection && currentSelection) {
-          try {
-            const newRange = document.createRange()
-            const textNode = editorRef.current.firstChild
-            if (textNode && textNode.textContent) {
-              const maxOffset = textNode.textContent.length
-              newRange.setStart(textNode, Math.min(currentSelection.startOffset, maxOffset))
-              newRange.setEnd(textNode, Math.min(currentSelection.endOffset, maxOffset))
-              selection.removeAllRanges()
-              selection.addRange(newRange)
-            } else {
-              // Fallback: place cursor at end
-              newRange.selectNodeContents(editorRef.current)
-              newRange.collapse(false)
-              selection.removeAllRanges()
-              selection.addRange(newRange)
-            }
-          } catch (e) {
-            // Fallback: place cursor at end
-            const newRange = document.createRange()
-            newRange.selectNodeContents(editorRef.current)
-            newRange.collapse(false)
-            selection.removeAllRanges()
-            selection.addRange(newRange)
-          }
-        }
+      const currentContent = editorRef.current.innerHTML
+      if (content !== currentContent) {
+        editorRef.current.innerHTML = content || ''
       }
     }
-  }, [value])
+  }, [content])
+
+  // Initialize content on mount
+  useEffect(() => {
+    if (editorRef.current) {
+      if (content) {
+        editorRef.current.innerHTML = content
+      } else {
+        editorRef.current.innerHTML = ''
+      }
+    }
+  }, [])
+
+  // Show placeholder when content is empty
+  const showPlaceholder = !content || content.trim() === '' || content === '<p></p>' || content === '<div></div>'
 
   return (
-    <div className={`rich-text-editor border border-[#d1d5db] rounded-lg ${className}`}>
+    <div className={`border border-gray-300 rounded-lg ${className}`}>
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-[#d1d5db] bg-[#e5e5e5] rounded-t-lg">
-        {/* Undo/Redo */}
-        <button
-          type="button"
-          onClick={undo}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Undo"
-        >
-          <Undo className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={redo}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Redo"
-        >
-          <Redo className="w-4 h-4" />
-        </button>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
-        {/* Text Formatting */}
-        <button
-          type="button"
-          onClick={() => executeCommand('bold')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Bold"
-        >
-          <Bold className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => executeCommand('italic')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Italic"
-        >
-          <Italic className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => executeCommand('underline')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Underline"
-        >
-          <Underline className="w-4 h-4" />
-        </button>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
-        {/* Headings */}
-        <div className="flex items-center gap-1">
+      <div className="border-b border-gray-300 p-3 flex flex-wrap gap-1 bg-gray-50">
+        {/* Text formatting */}
+        <div className="flex gap-1">
           <button
             type="button"
-            onClick={() => insertHeading(1)}
-            className="px-3 py-1 text-sm font-bold hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#255F38] border border-[#255F38]"
-            title="Heading 1"
+            onClick={() => execCommandEnhanced('bold')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('bold') ? 'bg-blue-100 text-blue-600' : ''
+            }`}
+            title="Bold (Ctrl+B)"
           >
-            H1
+            <Bold className="w-4 h-4" />
           </button>
           <button
             type="button"
-            onClick={() => insertHeading(2)}
-            className="px-3 py-1 text-sm font-bold hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#255F38] border border-[#255F38]"
-            title="Heading 2"
+            onClick={() => execCommandEnhanced('italic')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('italic') ? 'bg-blue-100 text-blue-600' : ''
+            }`}
+            title="Italic (Ctrl+I)"
           >
-            H2
+            <Italic className="w-4 h-4" />
           </button>
           <button
             type="button"
-            onClick={() => insertHeading(3)}
-            className="px-3 py-1 text-sm font-bold hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#255F38] border border-[#255F38]"
-            title="Heading 3"
+            onClick={() => execCommandEnhanced('underline')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('underline') ? 'bg-blue-100 text-blue-600' : ''
+            }`}
+            title="Underline (Ctrl+U)"
           >
-            H3
-          </button>
-          <button
-            type="button"
-            onClick={insertParagraph}
-            className="px-3 py-1 text-sm hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666] border border-[#d1d5db]"
-            title="Paragraph"
-          >
-            P
+            <Underline className="w-4 h-4" />
           </button>
         </div>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
+        {/* Headings */}
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('formatBlock', 'h1')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('h1') ? 'bg-green-100 text-green-600' : ''
+            }`}
+            title="Heading 1"
+          >
+            <Heading1 className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('formatBlock', 'h2')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('h2') ? 'bg-green-100 text-green-600' : ''
+            }`}
+            title="Heading 2"
+          >
+            <Heading2 className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('formatBlock', 'h3')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('h3') ? 'bg-green-100 text-green-600' : ''
+            }`}
+            title="Heading 3"
+          >
+            <Heading3 className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
         {/* Lists */}
-        <button
-          type="button"
-          onClick={() => executeCommand('insertUnorderedList')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666] border border-transparent hover:border-[#255F38]"
-          title="Bullet List"
-        >
-          <List className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => executeCommand('insertOrderedList')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666] border border-transparent hover:border-[#255F38]"
-          title="Numbered List"
-        >
-          <ListOrdered className="w-4 h-4" />
-        </button>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
-        {/* Special Formatting */}
-        <button
-          type="button"
-          onClick={insertQuote}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Quote"
-        >
-          <Quote className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={insertCode}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Code Block"
-        >
-          <Code className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={insertLink}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Insert Link"
-        >
-          <Link className="w-4 h-4" />
-        </button>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('insertUnorderedList')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('ul') ? 'bg-purple-100 text-purple-600' : ''
+            }`}
+            title="Bullet List"
+          >
+            <List className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('insertOrderedList')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('ol') ? 'bg-purple-100 text-purple-600' : ''
+            }`}
+            title="Numbered List"
+          >
+            <ListOrdered className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
         {/* Alignment */}
-        <button
-          type="button"
-          onClick={() => executeCommand('justifyLeft')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Align Left"
-        >
-          <AlignLeft className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => executeCommand('justifyCenter')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Align Center"
-        >
-          <AlignCenter className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => executeCommand('justifyRight')}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Align Right"
-        >
-          <AlignRight className="w-4 h-4" />
-        </button>
-        
-        <div className="w-px h-6 bg-[#d1d5db] mx-1" />
-        
-        {/* Clear Formatting */}
-        <button
-          type="button"
-          onClick={clearFormatting}
-          className="p-2 hover:bg-[#255F38] hover:text-white rounded transition-colors text-[#666666]"
-          title="Clear Formatting"
-        >
-          <Type className="w-4 h-4" />
-        </button>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('justifyLeft')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('left') ? 'bg-orange-100 text-orange-600' : ''
+            }`}
+            title="Align Left"
+          >
+            <AlignLeft className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('justifyCenter')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('center') ? 'bg-orange-100 text-orange-600' : ''
+            }`}
+            title="Align Center"
+          >
+            <AlignCenter className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('justifyRight')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('right') ? 'bg-orange-100 text-orange-600' : ''
+            }`}
+            title="Align Right"
+          >
+            <AlignRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
+        {/* Special formatting */}
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('formatBlock', 'blockquote')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('blockquote') ? 'bg-yellow-100 text-yellow-600' : ''
+            }`}
+            title="Quote"
+          >
+            <Quote className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('formatBlock', 'pre')}
+            className={`p-2 hover:bg-gray-200 rounded transition-colors ${
+              activeFormats.has('code') ? 'bg-gray-100 text-gray-600' : ''
+            }`}
+            title="Code Block"
+          >
+            <Code className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
+        {/* Links and Images */}
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              const url = prompt('Enter URL:')
+              if (url) execCommandEnhanced('createLink', url)
+            }}
+            className="p-2 hover:bg-gray-200 rounded transition-colors"
+            title="Insert Link"
+          >
+            <LinkIcon className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={handleImageClick}
+            className="p-2 hover:bg-gray-200 rounded transition-colors"
+            title="Insert Image"
+          >
+            <ImageIcon className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="border-l border-gray-300 mx-2"></div>
+
+        {/* Undo/Redo */}
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('undo')}
+            className="p-2 hover:bg-gray-200 rounded transition-colors"
+            title="Undo (Ctrl+Z)"
+          >
+            <Undo className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => execCommandEnhanced('redo')}
+            className="p-2 hover:bg-gray-200 rounded transition-colors"
+            title="Redo (Ctrl+Y)"
+          >
+            <Redo className="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      
+
       {/* Editor */}
       <div
         ref={editorRef}
         contentEditable
-        onInput={updateContent}
-        onPaste={handlePaste}
+        onInput={handleInput}
         onKeyDown={handleKeyDown}
-        onFocus={() => setIsFocused(true)}
+        onFocus={() => {
+          setIsFocused(true)
+          updateActiveFormats()
+        }}
         onBlur={() => setIsFocused(false)}
-        className={`min-h-[200px] p-4 focus:outline-none bg-white text-[#1a1a1a] ${
-          isFocused ? 'ring-2 ring-[#255F38]' : ''
+        onSelectionChange={updateActiveFormats}
+        className={`min-h-[400px] p-4 focus:outline-none relative prose prose-sm max-w-none ${
+          isFocused ? 'ring-2 ring-[#255F38] ring-opacity-50' : ''
         }`}
-        style={{ minHeight: '200px' }}
-        data-placeholder={placeholder}
-      />
-      
+        style={{ 
+          minHeight: '400px',
+          lineHeight: '1.6'
+        }}
+        suppressContentEditableWarning={true}
+      >
+        {showPlaceholder && (
+          <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
+            {placeholder}
+          </div>
+        )}
+      </div>
+
+      {/* Image Modal */}
+      {showImageModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Insert Image</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Image URL
+                </label>
+                <input
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Or upload file
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleImageSubmit}
+                className="px-4 py-2 bg-[#255F38] text-white rounded-lg hover:bg-[#1F7D53]"
+              >
+                Insert Image
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Instructions */}
+      <div className="px-4 py-2 bg-gray-50 border-t border-gray-300 text-xs text-gray-600">
+        💡 <strong>Tip:</strong> You can paste images directly from your clipboard (Ctrl+V) or use the image button to insert from URL or upload files. Use keyboard shortcuts: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline), Ctrl+Z (Undo), Ctrl+Y (Redo).
+      </div>
+
+      {/* Custom styles for editor content */}
       <style jsx global>{`
-        .rich-text-editor [contenteditable]:empty:before {
-          content: attr(data-placeholder);
-          color: #666666;
-          font-style: italic;
-        }
-        .rich-text-editor [contenteditable] {
-          outline: none;
-        }
-        .rich-text-editor [contenteditable] h1 {
-          font-size: 1.875rem;
+        .prose h1 {
+          font-size: 2rem;
           font-weight: bold;
-          margin: 0.5rem 0;
+          margin: 1.5rem 0 1rem 0;
+          color: #1a1a1a;
+          line-height: 1.2;
         }
-        .rich-text-editor [contenteditable] h2 {
+        .prose h2 {
           font-size: 1.5rem;
           font-weight: bold;
-          margin: 0.5rem 0;
+          margin: 1.25rem 0 0.75rem 0;
+          color: #1a1a1a;
+          line-height: 1.3;
         }
-        .rich-text-editor [contenteditable] h3 {
+        .prose h3 {
           font-size: 1.25rem;
           font-weight: bold;
-          margin: 0.5rem 0;
+          margin: 1rem 0 0.5rem 0;
+          color: #1a1a1a;
+          line-height: 1.4;
         }
-        .rich-text-editor [contenteditable] p {
-          margin: 0.5rem 0;
+        .prose p {
+          margin: 0.75rem 0;
+          line-height: 1.6;
         }
-        .rich-text-editor [contenteditable] ul, .rich-text-editor [contenteditable] ol {
-          margin: 0.5rem 0;
+        .prose ul, .prose ol {
+          margin: 0.75rem 0;
           padding-left: 1.5rem;
         }
-        .rich-text-editor [contenteditable] blockquote {
+        .prose li {
+          margin: 0.25rem 0;
+        }
+        .prose blockquote {
           border-left: 4px solid #255F38;
           padding-left: 1rem;
-          margin: 0.5rem 0;
+          margin: 1rem 0;
           font-style: italic;
-          color: #666666;
+          color: #666;
         }
-        .rich-text-editor [contenteditable] pre {
-          background-color: #f3f4f6;
+        .prose pre {
+          background-color: #f5f5f5;
           padding: 1rem;
-          border-radius: 0.375rem;
-          margin: 0.5rem 0;
-          font-family: monospace;
-          color: #1a1a1a;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin: 1rem 0;
+          font-family: 'Courier New', monospace;
         }
-        .rich-text-editor [contenteditable] a {
+        .prose code {
+          background-color: #f5f5f5;
+          padding: 0.125rem 0.25rem;
+          border-radius: 0.25rem;
+          font-family: 'Courier New', monospace;
+          font-size: 0.875rem;
+        }
+        .prose a {
           color: #255F38;
+          text-decoration: underline;
+        }
+        .prose a:hover {
+          color: #1F7D53;
+        }
+        .prose img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 0.5rem;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          margin: 1rem 0;
+        }
+        .prose strong {
+          font-weight: bold;
+        }
+        .prose em {
+          font-style: italic;
+        }
+        .prose u {
           text-decoration: underline;
         }
       `}</style>

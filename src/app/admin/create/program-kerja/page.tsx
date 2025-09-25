@@ -8,7 +8,6 @@ import {
   Users,
   Target,
   Calendar,
-  TrendingUp,
   CheckCircle,
   Clock,
   Edit,
@@ -318,10 +317,6 @@ export default function CreateProgramKerjaPage() {
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Divisi
                 </button>
-                <button className="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  View Analytics
-                </button>
               </div>
             </div>
 
@@ -357,4 +352,6 @@ export default function CreateProgramKerjaPage() {
     </div>
   )
 }
+
+
 

@@ -81,3 +81,6 @@ export function useJurnalById(id: string) {
   return { jurnal, loading, error }
 }
 
+
+
+

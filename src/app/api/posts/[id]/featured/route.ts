@@ -29,7 +29,6 @@ export async function PATCH(
     if (result.success) {
       // Revalidate the relevant pages
       revalidatePath('/hhhghghgwangik4167/manage')
-      revalidatePath('/hhhghghgwangik4167/analytics')
       revalidatePath('/blog')
       revalidatePath('/')
       

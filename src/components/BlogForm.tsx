@@ -188,7 +188,7 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
           <div>
             <label className="block text-sm font-medium text-[#666666] mb-2">
               <ImageIcon className="w-4 h-4 inline mr-2" />
-              Featured Image
+              Featured Image (Post Thumbnail)
             </label>
             <ImageUpload
               value={formData.featured_image_url}
@@ -196,7 +196,10 @@ export default function BlogForm({ initialData, mode = 'create' }: BlogFormProps
               className="mb-2"
             />
             <p className="text-sm text-[#666666]">
-              Upload a featured image for your blog post. Recommended size: 800x400px.
+              This image will be used as the main thumbnail for your blog post. It appears in blog listings and social media previews. Recommended size: 800x400px.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              💡 <strong>Note:</strong> To add images within your article content, use the image button in the editor toolbar above.
             </p>
           </div>
 

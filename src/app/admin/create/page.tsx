@@ -17,9 +17,24 @@ export const metadata: Metadata = {
 
 const createOptions = [
   {
+    id: "blog",
+    title: "Create Blogs",
+    description: "Write new blog posts with categories and tags",
+    icon: FileText,
+    href: "/admin/create/blog",
+    color: "bg-orange-500",
+    hoverColor: "hover:bg-orange-600",
+    features: [
+      "Rich text editor",
+      "Blog categories",
+      "Tag system",
+      "Content scheduling"
+    ]
+  },
+  {
     id: "jurnal",
-    title: "Create Jurnal",
-    description: "Buat artikel jurnal baru dengan rich text editor",
+    title: "Create Journals",
+    description: "Write journal entries with rich text editor",
     icon: BookOpen,
     href: "/admin/create/jurnal",
     color: "bg-blue-500",
@@ -33,8 +48,8 @@ const createOptions = [
   },
   {
     id: "dokumentasi",
-    title: "Create Dokumentasi",
-    description: "Upload dokumentasi acara dengan multiple photos",
+    title: "Add Photo Documentation",
+    description: "Upload event photos and documentation",
     icon: Camera,
     href: "/admin/create/dokumentasi",
     color: "bg-green-500",
@@ -47,9 +62,9 @@ const createOptions = [
     ]
   },
   {
-    id: "program-kerja",
-    title: "Create Program Kerja",
-    description: "Buat program kerja baru untuk divisi",
+    id: "proker",
+    title: "Edit Proker",
+    description: "Manage work programs and progress",
     icon: Users,
     href: "/admin/create/program-kerja",
     color: "bg-purple-500",
@@ -59,21 +74,6 @@ const createOptions = [
       "Program tracking",
       "Progress monitoring",
       "Timeline planning"
-    ]
-  },
-  {
-    id: "blog",
-    title: "Create Blog",
-    description: "Buat artikel blog dengan kategori dan tags",
-    icon: FileText,
-    href: "/admin/create/blog",
-    color: "bg-orange-500",
-    hoverColor: "hover:bg-orange-600",
-    features: [
-      "Blog categories",
-      "Tag system",
-      "Content scheduling",
-      "Social sharing"
     ]
   }
 ]
@@ -249,4 +249,6 @@ export default function CreatePage() {
     </div>
   )
 }
+
+
 

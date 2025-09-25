@@ -19,141 +19,72 @@ import {
   MapPin
 } from "lucide-react"
 
-export const metadata: Metadata = {
-  title: "Home | Organisasi Kami",
-  description: "Selamat datang di halaman utama organisasi kami. Kenali anggota tim dan visi misi kami.",
-}
-
 const anggotaData = [
   {
     id: 1,
-    nama: "Ahmad Rizki",
+    nama: "Lorem Ipsum",
     jabatan: "Ketua Organisasi",
-    email: "ahmad.rizki@organisasi.com",
+    email: "lorem1@ipsum.com",
     phone: "0812-3456-7891",
-    avatar: "AR",
+    avatar: "LI",
+    photo: "/public/osis-logo.svg",
     divisi: "Pimpinan",
-    deskripsi: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt."
+    deskripsi: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
     id: 2,
-    nama: "Siti Nurhaliza",
+    nama: "Lorem Ipsum",
     jabatan: "Wakil Ketua",
-    email: "siti.nurhaliza@organisasi.com",
+    email: "lorem2@ipsum.com",
     phone: "0812-3456-7892",
-    avatar: "SN",
+    avatar: "LI",
+    photo: "/public/vercel.svg",
     divisi: "Pimpinan",
-    deskripsi: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim."
+    deskripsi: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
   },
   {
     id: 3,
-    nama: "Muhammad Fajar",
+    nama: "Lorem Ipsum",
     jabatan: "Sekretaris",
-    email: "muhammad.fajar@organisasi.com",
+    email: "lorem3@ipsum.com",
     phone: "0812-3456-7893",
-    avatar: "MF",
+    avatar: "LI",
+    photo: "/public/next.svg",
     divisi: "Administrasi",
-    deskripsi: "Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip."
+    deskripsi: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip."
   },
   {
     id: 4,
-    nama: "Fatimah Azzahra",
+    nama: "Lorem Ipsum",
     jabatan: "Bendahara",
-    email: "fatimah.azzahra@organisasi.com",
+    email: "lorem4@ipsum.com",
     phone: "0812-3456-7894",
-    avatar: "FA",
+    avatar: "LI",
+    photo: "/public/globe.svg",
     divisi: "Keuangan",
     deskripsi: "Ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate."
   },
   {
     id: 5,
-    nama: "Budi Santoso",
+    nama: "Lorem Ipsum",
     jabatan: "Koordinator Program",
-    email: "budi.santoso@organisasi.com",
+    email: "lorem5@ipsum.com",
     phone: "0812-3456-7895",
-    avatar: "BS",
+    avatar: "LI",
+    photo: "/public/window.svg",
     divisi: "Program",
     deskripsi: "Velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat."
   },
   {
     id: 6,
-    nama: "Dewi Kartika",
-    jabatan: "Koordinator Humas",
-    email: "dewi.kartika@organisasi.com",
+    nama: "Lorem Ipsum",
+    jabatan: "Seksi Bidang",
+    email: "lorem6@ipsum.com",
     phone: "0812-3456-7896",
-    avatar: "DK",
-    divisi: "Humas",
-    deskripsi: "Cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est."
-  },
-  {
-    id: 7,
-    nama: "Rizki Pratama",
-    jabatan: "Koordinator IT",
-    email: "rizki.pratama@organisasi.com",
-    phone: "0812-3456-7897",
-    avatar: "RP",
-    divisi: "Teknologi",
-    deskripsi: "Laborum sed ut perspiciatis unde omnis iste natus error sit voluptatem."
-  },
-  {
-    id: 8,
-    nama: "Sari Indah",
-    jabatan: "Koordinator Event",
-    email: "sari.indah@organisasi.com",
-    phone: "0812-3456-7898",
-    avatar: "SI",
-    divisi: "Event",
-    deskripsi: "Accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo."
-  },
-  {
-    id: 9,
-    nama: "Andi Wijaya",
-    jabatan: "Anggota Aktif",
-    email: "andi.wijaya@organisasi.com",
-    phone: "0812-3456-7899",
-    avatar: "AW",
-    divisi: "Umum",
-    deskripsi: "Inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
-  },
-  {
-    id: 10,
-    nama: "Maya Sari",
-    jabatan: "Anggota Aktif",
-    email: "maya.sari@organisasi.com",
-    phone: "0812-3456-7900",
-    avatar: "MS",
-    divisi: "Umum",
-    deskripsi: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit."
-  },
-  {
-    id: 11,
-    nama: "Dedi Kurniawan",
-    jabatan: "Anggota Aktif",
-    email: "dedi.kurniawan@organisasi.com",
-    phone: "0812-3456-7901",
-    avatar: "DK",
-    divisi: "Umum",
-    deskripsi: "Sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
-  },
-  {
-    id: 12,
-    nama: "Lina Marlina",
-    jabatan: "Anggota Aktif",
-    email: "lina.marlina@organisasi.com",
-    phone: "0812-3456-7902",
-    avatar: "LM",
-    divisi: "Umum",
-    deskripsi: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur."
-  },
-  {
-    id: 13,
-    nama: "Eko Prasetyo",
-    jabatan: "Anggota Aktif",
-    email: "eko.prasetyo@organisasi.com",
-    phone: "0812-3456-7903",
-    avatar: "EP",
-    divisi: "Umum",
-    deskripsi: "Adipisci velit sed quia non numquam eius modi tempora incidunt ut labore."
+    avatar: "LI",
+    photo: "/public/file.svg",
+    divisi: "Bidang",
+    deskripsi: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil."
   }
 ]
 
@@ -275,97 +206,78 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Nilai Organisasi */}
-        <div className="mb-16">
-          <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">Lorem Ipsum Values</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {nilaiOrganisasi.map((nilai, index) => {
-              const Icon = nilai.icon
-              return (
-                <div key={index} className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-                  <div className="p-4 bg-[#255F38]/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Icon className="w-8 h-8 text-[#255F38]" />
-                  </div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-3">{nilai.title}</h4>
-                  <p className="text-gray-600 leading-relaxed">{nilai.description}</p>
       </div>
-    )
+
+
+      {/* Anggota (Team) Section - Zigzag Layout */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Tim Kami</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Kenali anggota tim yang luar biasa di balik organisasi kami.
+            </p>
+          </div>
+          <div className="flex flex-col gap-12">
+            {anggotaData.map((anggota, idx) => {
+              const isLeft = idx % 2 === 0;
+              const isBudiSantoso = anggota.nama === "Budi Santoso";
+              return (
+                <>
+                  <div
+                    key={anggota.id}
+                    className={`flex flex-col md:flex-row items-center ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} md:justify-between`}
+                  >
+                    <div className="bg-white rounded-3xl shadow-2xl p-12 flex-1 max-w-3xl border border-gray-100 min-h-[18rem] flex flex-col md:flex-row items-center gap-8">
+                      {/* Photo Avatar inside card */}
+                      <div className="w-48 h-48 bg-gradient-to-r from-[#255F38] to-[#1F7D53] rounded-3xl flex items-center justify-center shadow-2xl overflow-hidden border-4 border-white mb-6 md:mb-0">
+                        {anggota.photo ? (
+                          <img
+                            src={anggota.photo}
+                            alt={anggota.nama}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <span className="text-white text-4xl font-bold">{anggota.avatar}</span>
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="flex-1 flex flex-col justify-center">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                          <div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-1">{anggota.nama}</h3>
+                            <p className="text-lg text-[#255F38] font-semibold">{anggota.jabatan}</p>
+                          </div>
+                          <span className="bg-[#255F38] text-white px-4 py-2 rounded-full text-sm font-medium mt-2 md:mt-0">
+                            {anggota.divisi}
+                          </span>
+                        </div>
+                        <p className="text-gray-600 text-base leading-relaxed mb-6">{anggota.deskripsi}</p>
+                        <div className="flex flex-col sm:flex-row gap-4 text-gray-600">
+                          <div className="flex items-center">
+                            <Mail className="w-4 h-4 mr-2 text-[#255F38]" />
+                            <span className="text-sm">{anggota.email}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Phone className="w-4 h-4 mr-2 text-[#255F38]" />
+                            <span className="text-sm">{anggota.phone}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {isBudiSantoso && (
+                    <div className="w-full flex justify-center my-8">
+                      <span className="text-2xl font-bold text-[#255F38] bg-green-50 px-8 py-4 rounded-2xl shadow border border-[#1F7D53]/20">Sekbid (Seksi Bidang)</span>
+                    </div>
+                  )}
+                </>
+              );
             })}
           </div>
         </div>
       </div>
 
-      {/* Anggota Section */}
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Lorem Ipsum Team</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {anggotaData.map((anggota) => (
-              <div key={anggota.id} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
-                {/* Avatar */}
-                <div className="w-20 h-20 bg-gradient-to-r from-[#255F38] to-[#1F7D53] rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <span className="text-white text-xl font-bold">{anggota.avatar}</span>
-                </div>
-                
-                {/* Divisi Badge */}
-                <div className="text-center mb-4">
-                  <span className="bg-[#255F38] text-white px-4 py-2 rounded-full text-sm font-medium">
-                    {anggota.divisi}
-                  </span>
-                </div>
-                
-                {/* Nama dan Jabatan */}
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{anggota.nama}</h3>
-                  <p className="text-lg text-[#255F38] font-semibold">{anggota.jabatan}</p>
-                </div>
-                
-                {/* Deskripsi */}
-                <p className="text-gray-600 text-sm leading-relaxed mb-6 text-center">
-                  {anggota.deskripsi}
-                </p>
-                
-                {/* Contact Info */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center text-gray-600">
-                    <Mail className="w-4 h-4 mr-2 text-[#255F38]" />
-                    <span className="text-sm">{anggota.email}</span>
-                  </div>
-                  <div className="flex items-center justify-center text-gray-600">
-                    <Phone className="w-4 h-4 mr-2 text-[#255F38]" />
-                    <span className="text-sm">{anggota.phone}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Call to Action */}
-      <div className="bg-gradient-to-r from-[#255F38] to-[#1F7D53] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Bergabunglah dengan Kami</h2>
-          <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-            Mari bersama-sama membangun organisasi yang lebih baik dan berkontribusi 
-            untuk kemajuan masyarakat
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-[#255F38] px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-              Hubungi Kami
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-[#255F38] transition-colors">
-              Pelajari Lebih Lanjut
-            </button>
-          </div>
-        </div>
-        </div>
       </div>
     )
 }

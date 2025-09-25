@@ -8,8 +8,7 @@ import {
   Edit, 
   TrendingUp,
   Users,
-  Calendar,
-  BarChart3
+  Calendar
 } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -69,20 +68,6 @@ export default async function AdminDashboard() {
           </div>
         </Link>
 
-        <Link
-          href="/hhhghghgwangik4167/analytics"
-          className="bg-white rounded-lg shadow p-6 border border-[#d1d5db] hover:shadow-lg transition-shadow group"
-        >
-          <div className="flex items-center">
-            <div className="p-3 bg-green-500/20 rounded-lg mr-4 group-hover:bg-green-500/30 transition-colors">
-              <BarChart3 className="w-6 h-6 text-green-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-[#1a1a1a]">Analytics</h3>
-              <p className="text-[#666666]">View performance metrics</p>
-            </div>
-          </div>
-        </Link>
       </div>
 
       {/* Stats Overview */}

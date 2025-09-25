@@ -1,5 +1,7 @@
-import type { Metadata } from "next"
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 import { 
   ArrowLeft,
   Save,
@@ -8,31 +10,93 @@ import {
   Upload,
   X,
   Plus,
-  Minus,
-  Bold,
-  Italic,
-  Underline,
-  Link as LinkIcon,
-  List,
-  ListOrdered,
-  Heading1,
-  Heading2,
-  Heading3,
-  Image as ImageIcon,
-  Type,
   Calendar,
   Clock,
   Tag,
   Share2,
   Settings
 } from "lucide-react"
-
-export const metadata: Metadata = {
-  title: "Create Blog | Admin Dashboard",
-  description: "Create new blog post",
-}
+import RichTextEditor from "@/components/RichTextEditor"
 
 export default function CreateBlogPage() {
+  const [formData, setFormData] = useState({
+    title: '',
+    author: '',
+    excerpt: '',
+    content: '',
+    category: '',
+    tags: [] as string[],
+    featuredImage: '',
+    publishDate: '',
+    readTime: '5 min read',
+    status: 'draft',
+    metaTitle: '',
+    metaDescription: '',
+    slug: ''
+  })
+
+  const [newTag, setNewTag] = useState('')
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleAddTag = () => {
+    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, newTag.trim()]
+      }))
+      setNewTag('')
+    }
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Form submitted:', formData)
+    
+    // Validate required fields
+    if (!formData.title.trim()) {
+      alert('Judul blog harus diisi!')
+      return
+    }
+    if (!formData.author.trim()) {
+      alert('Author harus diisi!')
+      return
+    }
+    if (!formData.content.trim()) {
+      alert('Konten harus diisi!')
+      return
+    }
+    if (!formData.category) {
+      alert('Kategori harus dipilih!')
+      return
+    }
+    
+    // Here you would typically send the data to your API
+    console.log('All validation passed, ready to submit:', {
+      ...formData,
+      content: formData.content // This should contain the HTML content from the editor
+    })
+    
+    // Example API call (replace with your actual API endpoint)
+    // fetch('/api/blogs', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData)
+    // })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -49,15 +113,36 @@ export default function CreateBlogPage() {
               </div>
             </div>
             <div className="flex space-x-3">
-              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+              <button 
+                type="button"
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center"
+                onClick={() => {
+                  console.log('Preview clicked')
+                  console.log('Current content:', formData.content)
+                }}
+              >
                 <EyeOff className="w-4 h-4 mr-2" />
                 Preview
               </button>
-              <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center">
+              <button 
+                type="button"
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center"
+                onClick={() => {
+                  handleInputChange('status', 'draft')
+                  handleSubmit(new Event('submit') as any)
+                }}
+              >
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
               </button>
-              <button className="px-4 py-2 bg-[#255F38] text-white rounded-lg hover:bg-[#1F7D53] flex items-center">
+              <button 
+                type="button"
+                className="px-4 py-2 bg-[#255F38] text-white rounded-lg hover:bg-[#1F7D53] flex items-center"
+                onClick={() => {
+                  handleInputChange('status', 'published')
+                  handleSubmit(new Event('submit') as any)
+                }}
+              >
                 <Eye className="w-4 h-4 mr-2" />
                 Publish
               </button>
@@ -69,7 +154,7 @@ export default function CreateBlogPage() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow">
-          <form className="p-8 space-y-8">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
             {/* Basic Information */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
@@ -80,6 +165,8 @@ export default function CreateBlogPage() {
                   </label>
                   <input
                     type="text"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                     placeholder="Masukkan judul blog yang menarik..."
                   />
@@ -92,6 +179,8 @@ export default function CreateBlogPage() {
                   </label>
                   <input
                     type="text"
+                    value={formData.author}
+                    onChange={(e) => handleInputChange('author', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                     placeholder="Nama penulis..."
                   />
@@ -104,6 +193,8 @@ export default function CreateBlogPage() {
                   </label>
                   <textarea
                     rows={3}
+                    value={formData.excerpt}
+                    onChange={(e) => handleInputChange('excerpt', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                     placeholder="Ringkasan singkat artikel (akan muncul di preview)..."
                   />
@@ -114,49 +205,31 @@ export default function CreateBlogPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Konten *
                   </label>
-                  <div className="border border-gray-300 rounded-lg">
-                    {/* Toolbar */}
-                    <div className="border-b border-gray-300 p-3 flex flex-wrap gap-2">
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Bold className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Italic className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Underline className="w-4 h-4" />
-                      </button>
-                      <div className="border-l border-gray-300 mx-2"></div>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Heading1 className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Heading2 className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <Heading3 className="w-4 h-4" />
-                      </button>
-                      <div className="border-l border-gray-300 mx-2"></div>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <LinkIcon className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <ImageIcon className="w-4 h-4" />
-                      </button>
-                      <div className="border-l border-gray-300 mx-2"></div>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <List className="w-4 h-4" />
-                      </button>
-                      <button type="button" className="p-2 hover:bg-gray-100 rounded">
-                        <ListOrdered className="w-4 h-4" />
-                      </button>
-                    </div>
-                    {/* Editor */}
-                    <textarea
-                      rows={15}
-                      className="w-full px-4 py-4 border-0 focus:ring-0 resize-none"
-                      placeholder="Tulis konten blog di sini..."
-                    />
+                  <RichTextEditor
+                    content={formData.content}
+                    onChange={(content) => {
+                      console.log('Content changed:', content)
+                      handleInputChange('content', content)
+                    }}
+                    placeholder="Tulis konten blog di sini... Anda dapat menempelkan gambar langsung dari clipboard (Ctrl+V) atau menggunakan tombol gambar untuk mengunggah dari URL atau file."
+                    className="min-h-[500px]"
+                  />
+                  
+                  {/* Debug section - remove in production */}
+                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2">Debug Info:</h4>
+                    <p className="text-sm text-gray-600">
+                      <strong>Content length:</strong> {formData.content.length} characters
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Has content:</strong> {formData.content ? 'Yes' : 'No'}
+                    </p>
+                    <details className="mt-2">
+                      <summary className="text-sm text-gray-600 cursor-pointer">Show raw content</summary>
+                      <pre className="text-xs text-gray-500 mt-2 bg-white p-2 rounded overflow-auto max-h-32">
+                        {formData.content}
+                      </pre>
+                    </details>
                   </div>
                 </div>
               </div>
@@ -182,7 +255,11 @@ export default function CreateBlogPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Kategori *
                   </label>
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent">
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
+                  >
                     <option value="">Pilih kategori...</option>
                     <option value="Technology">Technology</option>
                     <option value="Lifestyle">Lifestyle</option>
@@ -200,26 +277,33 @@ export default function CreateBlogPage() {
                     Tags
                   </label>
                   <div className="flex flex-wrap gap-2 mb-2">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center">
-                      Technology
-                      <button type="button" className="ml-2 text-blue-600 hover:text-blue-800">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center">
-                      Web Development
-                      <button type="button" className="ml-2 text-green-600 hover:text-green-800">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
+                    {formData.tags.map((tag, index) => (
+                      <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center">
+                        {tag}
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveTag(tag)}
+                          className="ml-2 text-blue-600 hover:text-blue-800"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
                   </div>
                   <div className="flex">
                     <input
                       type="text"
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                       placeholder="Tambahkan tag..."
                     />
-                    <button type="button" className="px-4 py-2 bg-[#255F38] text-white rounded-r-lg hover:bg-[#1F7D53]">
+                    <button 
+                      type="button" 
+                      onClick={handleAddTag}
+                      className="px-4 py-2 bg-[#255F38] text-white rounded-r-lg hover:bg-[#1F7D53]"
+                    >
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
@@ -233,6 +317,8 @@ export default function CreateBlogPage() {
                   </label>
                   <input
                     type="datetime-local"
+                    value={formData.publishDate}
+                    onChange={(e) => handleInputChange('publishDate', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                   />
                 </div>
@@ -245,6 +331,8 @@ export default function CreateBlogPage() {
                   </label>
                   <input
                     type="text"
+                    value={formData.readTime}
+                    onChange={(e) => handleInputChange('readTime', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                     placeholder="5 min read"
                   />
@@ -255,7 +343,11 @@ export default function CreateBlogPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Status
                   </label>
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent">
+                  <select 
+                    value={formData.status}
+                    onChange={(e) => handleInputChange('status', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
+                  >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
                     <option value="scheduled">Scheduled</option>
@@ -320,6 +412,8 @@ export default function CreateBlogPage() {
                       </label>
                       <input
                         type="text"
+                        value={formData.metaTitle}
+                        onChange={(e) => handleInputChange('metaTitle', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                         placeholder="SEO title..."
                       />
@@ -331,6 +425,8 @@ export default function CreateBlogPage() {
                       </label>
                       <textarea
                         rows={3}
+                        value={formData.metaDescription}
+                        onChange={(e) => handleInputChange('metaDescription', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                         placeholder="SEO description..."
                       />
@@ -342,6 +438,8 @@ export default function CreateBlogPage() {
                       </label>
                       <input
                         type="text"
+                        value={formData.slug}
+                        onChange={(e) => handleInputChange('slug', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#255F38] focus:border-transparent"
                         placeholder="blog-post-url"
                       />
@@ -356,4 +454,6 @@ export default function CreateBlogPage() {
     </div>
   )
 }
+
+
 
