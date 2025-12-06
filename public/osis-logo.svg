@@ -1,0 +1,38 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <!-- Pentagon background -->
+  <path d="M48 8L84 32L72 64H24L12 32L48 8Z" fill="#255F38" stroke="white" stroke-width="2"/>
+  
+  <!-- Top text: MADRASAH TSANAWIYAH -->
+  <text x="48" y="20" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="6" font-weight="bold" letter-spacing="0.5px">MADRASAH TSANAWIYAH</text>
+  
+  <!-- Star -->
+  <path d="M48 28L50.5 35L58 35L52 40L54.5 47L48 42L41.5 47L44 40L38 35L45.5 35L48 28Z" fill="#FFD700"/>
+  
+  <!-- Open book -->
+  <rect x="42" y="50" width="12" height="8" fill="white" stroke="black" stroke-width="0.5"/>
+  <line x1="44" y1="52" x2="50" y2="52" stroke="black" stroke-width="0.3"/>
+  <line x1="44" y1="54" x2="50" y2="54" stroke="black" stroke-width="0.3"/>
+  <line x1="44" y1="56" x2="50" y2="56" stroke="black" stroke-width="0.3"/>
+  
+  <!-- Book stand -->
+  <path d="M40 58L48 60L56 58" stroke="white" stroke-width="1" fill="none"/>
+  <path d="M42 60L48 62L54 60" stroke="white" stroke-width="1" fill="none"/>
+  
+  <!-- Left wreath/chain -->
+  <path d="M32 45Q36 40 40 45Q36 50 32 45" stroke="white" stroke-width="1" fill="none"/>
+  <circle cx="34" cy="42" r="1" fill="white"/>
+  <circle cx="36" cy="44" r="1" fill="white"/>
+  <circle cx="38" cy="46" r="1" fill="white"/>
+  
+  <!-- Right wreath/leaves -->
+  <path d="M64 45Q60 40 56 45Q60 50 64 45" stroke="#FFD700" stroke-width="1" fill="none"/>
+  <path d="M62 42L60 44L58 46" stroke="#FFD700" stroke-width="1" fill="none"/>
+  <path d="M66 42L68 44L70 46" stroke="#FFD700" stroke-width="1" fill="none"/>
+  
+  <!-- Banner: IKHLAS BERAMAL -->
+  <path d="M30 65Q48 63 66 65Q48 67 30 65Z" fill="white"/>
+  <text x="48" y="66" text-anchor="middle" fill="black" font-family="Arial, sans-serif" font-size="4" font-weight="bold">IKHLAS BERAMAL</text>
+  
+  <!-- Bottom text: OSIS -->
+  <text x="48" y="80" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">OSIS</text>
+</svg>
