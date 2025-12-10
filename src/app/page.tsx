@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next" 
 import { 
   Users, 
   Target, 
@@ -146,17 +146,17 @@ export default function Home() {
             </div>
             
                    {/* Main Heading */}
-                   <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-                     <span className="block">Lorem Ipsum</span>
-                     <span className="block text-green-200">Dolor Sit Amet</span>
-                   </h1>
-                   
-                   {/* Subtitle */}
-                   <p className="text-xl md:text-2xl text-green-100 max-w-4xl mx-auto leading-relaxed mb-12">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                   </p>
-            
+                    <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
+                      <span className="block">Lorem Ipsum</span>
+                      <span className="block text-green-200">Dolor Sit Amet</span>
+                    </h1>
+                    
+                    {/* Subtitle */}
+                    <p className="text-xl md:text-2xl text-green-100 max-w-4xl mx-auto leading-relaxed mb-12">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+              
           </div>
         </div>
         
@@ -223,7 +223,6 @@ export default function Home() {
               const isLeft = idx % 2 === 0;
               const isBudiSantoso = anggota.nama === "Budi Santoso";
               return (
-                <>
                   <div
                     key={anggota.id}
                     className={`flex flex-col md:flex-row items-center ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} md:justify-between`}
@@ -266,12 +265,6 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  {isBudiSantoso && (
-                    <div className="w-full flex justify-center my-8">
-                      <span className="text-2xl font-bold text-[#255F38] bg-green-50 px-8 py-4 rounded-2xl shadow border border-[#1F7D53]/20">Sekbid (Seksi Bidang)</span>
-                    </div>
-                  )}
-                </>
               );
             })}
           </div>

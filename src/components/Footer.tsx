@@ -12,12 +12,13 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="lg:col-span-1">
             <div className="flex flex-col items-center text-center mb-6">
-              <div className="w-24 h-24 relative mb-4 overflow-hidden">
+              <div className="w-24 h-24 relative mb-4">
                 <Image
                   src="/osis-logo.svg"
                   alt="Madrasah Tsanawiyah OSIS Logo"
-                  fill
-                  className="object-fill"
+                  width={96}
+                  height={96}
+                  className="object-contain"
                 />
               </div>
               <Link href="/" className="text-2xl font-bold text-[#1a1a1a] hover:text-[#255F38] transition-colors">
