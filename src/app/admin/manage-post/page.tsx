@@ -176,7 +176,7 @@ const mockPosts = {
       featured: false
     }
   ],
-  program-kerja: [
+  "program-kerja": [
     {
       id: "1",
       title: "Divisi Pimpinan Program Update",
